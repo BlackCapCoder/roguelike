@@ -1,0 +1,119 @@
+executables:
+  rogue-exe:
+    main:        Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -O2
+    dependencies:
+    - rogue
+library:
+  source-dirs: src
+dependencies:
+- base-noprelude >= 4.7
+- MyPrelude
+- containers
+- transformers
+- mtl
+- semirings
+- comonad
+- groups
+- text
+- bytestring
+- vector
+# - text-ansi
+- terminal-size
+- groupBy
+- random
+default-extensions:
+- AllowAmbiguousTypes
+- ApplicativeDo
+- Arrows
+- BangPatterns
+- BinaryLiterals
+- BlockArguments
+- ConstrainedClassMethods
+- ConstraintKinds
+- DataKinds
+- DefaultSignatures
+- DeriveAnyClass
+- DeriveDataTypeable
+- DeriveFoldable
+- DeriveFunctor
+- DeriveGeneric
+- DeriveLift
+- DeriveTraversable
+- DerivingStrategies
+- DerivingVia
+- DisambiguateRecordFields
+- DoAndIfThenElse
+- DuplicateRecordFields
+- EmptyCase
+- EmptyDataDecls
+- EmptyDataDeriving
+- ExistentialQuantification
+- ExplicitForAll
+- ExplicitNamespaces
+- ExtendedDefaultRules
+- FlexibleContexts
+- FlexibleInstances
+- FunctionalDependencies
+- GADTSyntax
+- GADTs
+- GeneralizedNewtypeDeriving
+- HexFloatLiterals
+- ImplicitParams
+# - ImportQualifiedPost
+- InstanceSigs
+- KindSignatures
+- LambdaCase
+- LiberalTypeSynonyms
+- MagicHash
+- MonadComprehensions
+- MultiParamTypeClasses
+- MultiWayIf
+- NamedFieldPuns
+- NamedWildCards
+- NoMonomorphismRestriction
+- NoStarIsType
+- NondecreasingIndentation
+- NumDecimals
+- NumericUnderscores
+- OverloadedLabels
+- OverloadedStrings
+- PackageImports
+- ParallelArrays
+- ParallelListComp
+- PartialTypeSignatures
+- PatternGuards
+- PatternSynonyms
+- PolyKinds
+- PostfixOperators
+- QuantifiedConstraints
+- QuasiQuotes
+- RankNTypes
+- RecordWildCards
+- RecursiveDo
+- RelaxedLayout
+- RelaxedPolyRec
+- RoleAnnotations
+- ScopedTypeVariables
+- StandaloneDeriving
+# - StandaloneKindSignatures
+- TransformListComp
+- TupleSections
+- TypeApplications
+- TypeFamilies
+- TypeFamilyDependencies
+- TypeInType
+- TypeOperators
+- TypeSynonymInstances
+- UnboxedSums
+- UnboxedTuples
+- UnicodeSyntax
+- ViewPatterns
+name: rogue
+verbatim:
+  cabal-version: 2.4

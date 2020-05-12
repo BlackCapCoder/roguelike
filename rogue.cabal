@@ -1,0 +1,74 @@
+cabal-version: 2.4
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: f28eb450d15c77be0b71ea4284dc0fe1233cc5309e6b38035b5f27622b7f8906
+
+name:           rogue
+version:        0.0.0
+build-type:     Simple
+
+library
+  exposed-modules:
+      ANSI
+      Cellular
+      Engine
+      FOV
+      Geometry
+      Indexable
+      Memory
+      Portal
+      Sized
+      Stream
+      World
+      WorldMap
+      Zipper
+  other-modules:
+      Paths_rogue
+  hs-source-dirs:
+      src
+  default-extensions: AllowAmbiguousTypes ApplicativeDo Arrows BangPatterns BinaryLiterals BlockArguments ConstrainedClassMethods ConstraintKinds DataKinds DefaultSignatures DeriveAnyClass DeriveDataTypeable DeriveFoldable DeriveFunctor DeriveGeneric DeriveLift DeriveTraversable DerivingStrategies DerivingVia DisambiguateRecordFields DoAndIfThenElse DuplicateRecordFields EmptyCase EmptyDataDecls EmptyDataDeriving ExistentialQuantification ExplicitForAll ExplicitNamespaces ExtendedDefaultRules FlexibleContexts FlexibleInstances FunctionalDependencies GADTSyntax GADTs GeneralizedNewtypeDeriving HexFloatLiterals ImplicitParams InstanceSigs KindSignatures LambdaCase LiberalTypeSynonyms MagicHash MonadComprehensions MultiParamTypeClasses MultiWayIf NamedFieldPuns NamedWildCards NoMonomorphismRestriction NoStarIsType NondecreasingIndentation NumDecimals NumericUnderscores OverloadedLabels OverloadedStrings PackageImports ParallelArrays ParallelListComp PartialTypeSignatures PatternGuards PatternSynonyms PolyKinds PostfixOperators QuantifiedConstraints QuasiQuotes RankNTypes RecordWildCards RecursiveDo RelaxedLayout RelaxedPolyRec RoleAnnotations ScopedTypeVariables StandaloneDeriving TransformListComp TupleSections TypeApplications TypeFamilies TypeFamilyDependencies TypeInType TypeOperators TypeSynonymInstances UnboxedSums UnboxedTuples UnicodeSyntax ViewPatterns
+  build-depends:
+      MyPrelude
+    , base-noprelude >=4.7
+    , bytestring
+    , comonad
+    , containers
+    , groupBy
+    , groups
+    , mtl
+    , random
+    , semirings
+    , terminal-size
+    , text
+    , transformers
+    , vector
+  default-language: Haskell2010
+
+executable rogue-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_rogue
+  hs-source-dirs:
+      app
+  default-extensions: AllowAmbiguousTypes ApplicativeDo Arrows BangPatterns BinaryLiterals BlockArguments ConstrainedClassMethods ConstraintKinds DataKinds DefaultSignatures DeriveAnyClass DeriveDataTypeable DeriveFoldable DeriveFunctor DeriveGeneric DeriveLift DeriveTraversable DerivingStrategies DerivingVia DisambiguateRecordFields DoAndIfThenElse DuplicateRecordFields EmptyCase EmptyDataDecls EmptyDataDeriving ExistentialQuantification ExplicitForAll ExplicitNamespaces ExtendedDefaultRules FlexibleContexts FlexibleInstances FunctionalDependencies GADTSyntax GADTs GeneralizedNewtypeDeriving HexFloatLiterals ImplicitParams InstanceSigs KindSignatures LambdaCase LiberalTypeSynonyms MagicHash MonadComprehensions MultiParamTypeClasses MultiWayIf NamedFieldPuns NamedWildCards NoMonomorphismRestriction NoStarIsType NondecreasingIndentation NumDecimals NumericUnderscores OverloadedLabels OverloadedStrings PackageImports ParallelArrays ParallelListComp PartialTypeSignatures PatternGuards PatternSynonyms PolyKinds PostfixOperators QuantifiedConstraints QuasiQuotes RankNTypes RecordWildCards RecursiveDo RelaxedLayout RelaxedPolyRec RoleAnnotations ScopedTypeVariables StandaloneDeriving TransformListComp TupleSections TypeApplications TypeFamilies TypeFamilyDependencies TypeInType TypeOperators TypeSynonymInstances UnboxedSums UnboxedTuples UnicodeSyntax ViewPatterns
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -O2
+  build-depends:
+      MyPrelude
+    , base-noprelude >=4.7
+    , bytestring
+    , comonad
+    , containers
+    , groupBy
+    , groups
+    , mtl
+    , random
+    , rogue
+    , semirings
+    , terminal-size
+    , text
+    , transformers
+    , vector
+  default-language: Haskell2010
