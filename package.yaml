@@ -20,13 +20,15 @@ dependencies:
 - semirings
 - comonad
 - groups
-- text
+# - text
 - bytestring
 - vector
 # - text-ansi
 - terminal-size
 - groupBy
 - random
+- streams
+- distributive
 default-extensions:
 - AllowAmbiguousTypes
 - ApplicativeDo

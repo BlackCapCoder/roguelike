@@ -2,9 +2,10 @@ module Zipper where
 
 import Indexable
 import Geometry
+import Stack
 
 import Control.Comonad
-import Stream as S
+import Data.Stream.Infinite as S
 
 
 data ListZipper a
@@ -21,13 +22,13 @@ instance Comonad ListZipper where
 
 
 pattern LZ ls r rs
-  = LZ' ls (r :- rs)
+  = LZ' ls (r :> rs)
 
-leftLZ (LZ (l:-ls) x rs)
-  = LZ ls l (x:-rs)
+leftLZ (LZ (l:>ls) x rs)
+  = LZ ls l (x:>rs)
 
-rightLZ (LZ ls x (r:-rs))
-  = LZ (x:-ls) r rs
+rightLZ (LZ ls x (r:>rs))
+  = LZ (x:>ls) r rs
 
 writeLZ x (LZ ls _ rs)
   = LZ ls x rs
@@ -81,6 +82,11 @@ vertical =
   genericMove up down
 
 ---------
+
+instance Indexable (Stream a) Int a
+  where
+    unsafeIndex (x :> _) 0 = x
+    unsafeIndex (_ :> x) n = unsafeIndex x (n - 1)
 
 instance Indexable (ListZipper a) Int a
   where

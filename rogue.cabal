@@ -4,7 +4,7 @@ cabal-version: 2.4
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f28eb450d15c77be0b71ea4284dc0fe1233cc5309e6b38035b5f27622b7f8906
+-- hash: c0dc44ac4f5c0ea5037c38f068ed76a2b5b182dad42dfb078a28238fb6433ba2
 
 name:           rogue
 version:        0.0.0
@@ -21,7 +21,7 @@ library
       Memory
       Portal
       Sized
-      Stream
+      Stack
       World
       WorldMap
       Zipper
@@ -36,13 +36,14 @@ library
     , bytestring
     , comonad
     , containers
+    , distributive
     , groupBy
     , groups
     , mtl
     , random
     , semirings
+    , streams
     , terminal-size
-    , text
     , transformers
     , vector
   default-language: Haskell2010
@@ -61,14 +62,15 @@ executable rogue-exe
     , bytestring
     , comonad
     , containers
+    , distributive
     , groupBy
     , groups
     , mtl
     , random
     , rogue
     , semirings
+    , streams
     , terminal-size
-    , text
     , transformers
     , vector
   default-language: Haskell2010

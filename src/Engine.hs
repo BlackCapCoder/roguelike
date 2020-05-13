@@ -5,7 +5,6 @@ import WorldMap
 import ANSI
 import Geometry
 import Indexable
--- import Memory
 
 import Control.Monad.State
 import System.IO
@@ -48,15 +47,17 @@ getScreenSize = do
 
 setScreenSize s = do
   modify' \st -> st { screen = s }
-  -- liftIO . B.putStr $ ansiClear
+  liftIO . B.putStr $ ansiClear
   centerCam =<< gets player
   redraw
 
 engine = do
   liftIO do
-    hSetBuffering stdout $ BlockBuffering (Just $ 1024*8)
-    hSetBuffering stdin    NoBuffering
-    hSetEcho      stdout   False
+    hSetBuffering  stdin    NoBuffering
+    hSetBuffering  stdout $ BlockBuffering (Just $ 1024*8)
+    hSetBinaryMode stdout   True
+    hSetBuffering  stdout $ BlockBuffering Nothing
+    hSetEcho       stdout   False
     B.putStr $ ansiHideCursor <> ansiClear
 
   setScreenSize =<< getScreenSize
@@ -115,7 +116,6 @@ movePlayer v = do
       | let -> do
           put w { player = pl }
           centerCam pl >>= \case
-          -- camScrolloff pl v >>= \case
             False -> renderFOV
             True  -> redraw
 
@@ -128,24 +128,6 @@ centerCam p = do
     Just moved -> do
       put w { camera = moved }
       pure True
-
--- camScrolloff p v = do
---   vd  <- gets viewDist
---   cam <- gets getCam
---   w   <- get
---   let p' = p - Pos vd vd
---   let r  = Rect p' (Size (vd*2+1) (vd*2+1))
---   let c  = Rect (pos cam + v) $ size cam
---
---   if | not $ recInside r cam
---      , recInside c w
---      , any (liftA2 (&&) (not . posInside cam) $ posInside c)
---      $ [_tl,_tr,_bl,_br]<*>[r]
---      -> do
---          put w { camera = pos c }
---          pure True
---      | otherwise ->
---          pure False
 
 redraw = do
   modify' \w -> w { visible = mempty }
@@ -180,6 +162,7 @@ renderFOV = do
 
   liftIO $
     vMemPtr v \ptrM -> do
+      -- B.putStr ansiClear
 
       mapM_ (vTransfer v ptrM) (S.toList dB)
 
@@ -192,6 +175,7 @@ renderFOV = do
   liftIO do
     setCursorPos $ vClamp v pl
     putChar '@'
+    -- putStr $ show do length dA + length dB
     hFlush stdout
 
 renderIndicies v@(View _ wm) s ptr
@@ -203,6 +187,5 @@ renderIndicies v@(View _ wm) s ptr
 
 memoryColor
   = rgb 64 64 64
-  -- = B.putStr ansiFgGray
-  -- = rgbFg 100 100 100
+
 

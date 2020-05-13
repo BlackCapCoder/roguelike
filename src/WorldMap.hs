@@ -39,7 +39,7 @@ instance Indexable WorldMap Pos Char
 
 
 cellMap gens = do
-  cell <- Cell.mk45' gens
+  cell <- Cell.mk45 gens
   pure WorldMap
     { wmsize = Nothing
     , tiles  = Ix cell
@@ -158,7 +158,7 @@ vTransfer v@(View _ w) mptr p@(V2 x y) =
 
 {-# INLINE vPutLineIx #-}
 vPutLineIx v ptr o l = do
-  hPutBuf stdout (F.plusPtr ptr $ o) l
+  void $ hPutBufNonBlocking stdout (F.plusPtr ptr $ o) l
 
 {-# INLINE vPutLinePos #-}
 vPutLinePos v@(View _ wm) mptr p@(V2 x y) l =

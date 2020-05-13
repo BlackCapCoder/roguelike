@@ -2,7 +2,7 @@ module FOV where
 
 import Data.List (foldl1', find, groupBy)
 import qualified Data.Set as S
-import qualified Data.Text as T
+
 
 newtype Bump = B (Int, Int)
   deriving (Show, Eq)

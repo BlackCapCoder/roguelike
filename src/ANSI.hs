@@ -43,6 +43,3 @@ esc = "\ESC["
 m    = B.charUtf8 'm'
 semi = B.charUtf8 ';'
 
--- rgbFg r g b
---   = B.hPutBuilder stdout $
---       esc <> "38;2;" <> B.word8Dec r <> ";" <> B.word8Dec g <> ";" <> B.word8Dec b

@@ -30,18 +30,8 @@ instance HasPos World
   where
     pos _ = V2 0 0
 
--- instance HasSize World
---   where
---     size = size . level
-
 getCam
   = liftA2 Rect camera screen
-
--- getCam
---   = liftA2 Rect camera $ liftA2 f screen (size . level)
---   where
---     f (Size x1 y1) (Size x2 y2)
---       = Size (min x1 x2) (min y1 y2)
 
 camView
   = liftA2 view getCam level

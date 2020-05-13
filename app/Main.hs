@@ -10,6 +10,7 @@ main :: IO ()
 main = do
   cell <- cellMap 3
 
+
   void $ flip runEngineT engine (newWorld $ cell)
   -- void $ flip runEngineT engine (newWorld $ fromChunk house)
   -- void $ flip runEngineT engine (newWorld $ fromChunk houses)
