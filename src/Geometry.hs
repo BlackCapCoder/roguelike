@@ -124,6 +124,9 @@ class HasSize t
     size :: t -> Size
     size = liftA2 Size width height
 
+    area :: t -> Int
+    area = liftA2 (*) width height
+
     width :: t -> Int
     width (Size' w _) = w
 

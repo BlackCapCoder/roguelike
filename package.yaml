@@ -29,6 +29,7 @@ dependencies:
 - random
 - streams
 - distributive
+- codo-notation
 default-extensions:
 - AllowAmbiguousTypes
 - ApplicativeDo

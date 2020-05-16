@@ -38,21 +38,6 @@ instance Indexable WorldMap Pos Char
     unsafeIndex = unsafeIndex . tiles
 
 
-cellMap gens = do
-  cell <- Cell.mk45 gens
-  pure WorldMap
-    { wmsize = Nothing
-    , tiles  = Ix cell
-    , memory = emptyMemory
-    }
-
-boringMap
-  = WorldMap
-    { wmsize = Nothing
-    , tiles  = Ix Boring
-    , memory = emptyMemory
-    }
-
 wmMemSize wm =
   case wmsize wm of
     Nothing -> chunkSize
@@ -67,6 +52,14 @@ fromChunk c
       , memory = emptyMemory
       }
 
+cellMap = do
+  cell <- Cell.mk45
+  pure WorldMap
+    { wmsize = Nothing
+    , tiles  = Ix cell
+    , memory = emptyMemory
+    }
+
 isTileSolid
   = (== '#')
 
@@ -74,8 +67,8 @@ wmSolid w i
   = w ! i == '#'
 
 vFov rad p@(V2 px py) v@(View b wm)
-  = Set.map fj
-  . Set.filter isJust
+  = Set.map fromJust
+  . Set.delete Nothing
   $ F.digital rad (\(F.B (x,y)) -> getTile $ V2 px py + V2 x y) isClear
   where
     getTile p@(V2 x y)
@@ -86,19 +79,14 @@ vFov rad p@(V2 px py) v@(View b wm)
     isClear i
       | let = maybe False (not . isTileSolid) $ index wm =<< i
 
-    fj (Just x) = x
-    fj Nothing  = error "What."
-
--- vFov rad p@(Pos px py) v@(View b wm)
---   = Set.delete (-1)
---   $ F.digital rad (\(F.B (x,y)) -> getTile $ Pos px py + Pos x y) isClear
---   where
---     getTile p@(Pos x y)
---       | not (posInside b p) = -1
---       | let = x + y * stride wm
---     isClear i
---       | i == -1 = False
---       | let = maybe False (not . isTileSolid) $ index wm i
+vFov' rad p v@(View b wm)
+  = Set.map (+p)
+  $ F.digital rad (\(F.B (x,y)) -> V2 x y) isClear
+  where
+    isClear
+      = not . isTileSolid . unsafeIndex lvl
+    lvl
+      = focus (tiles wm) p
 
 -------------
 
@@ -107,8 +95,6 @@ data View
 
 view r wm
   = View r wm
-  -- | recInside r (bounds wm) = View r wm
-  -- | otherwise               = error "BAD VIEW"
 
 instance HasPos View
   where
@@ -126,10 +112,6 @@ instance HasSize View
 vTile (View (Rect o _) wm) p
   = wm ! (p + o)
 
-
--- viewIx v@(View (Rect o s) wm) p
---   = ix wm (p+o)
-
 viewPos v@(View (Rect o s) wm) i
   | (y,x) <- divMod i (stride wm)
   = V2 x y - o
@@ -143,18 +125,13 @@ vClamp (View (Rect o _) wm) p
 
 vMemPtr (View r w) f
   = memPtr r (memory w) f
-  -- = f ()
 
 {-# INLINE vTransfer #-}
 vTransfer v@(View _ w) mptr p@(V2 x y) =
   case mptr of
     Nothing  -> memSetPos p (w ! p) (memory w)
-    Just ptr -> F.pokeElemOff ptr i $ F.castCharToCChar (w ! p)
- where
-   Size sw sh = chunkSize
-   (cx, mx) = divMod x sw
-   (cy, my) = divMod y sh
-   i        = my * sw + mx
+    Just ptr -> F.pokeElemOff ptr (wmPointToIndex p) $
+                  F.castCharToCChar (w ! p)
 
 {-# INLINE vPutLineIx #-}
 vPutLineIx v ptr o l = do
@@ -163,22 +140,19 @@ vPutLineIx v ptr o l = do
 {-# INLINE vPutLinePos #-}
 vPutLinePos v@(View _ wm) mptr p@(V2 x y) l =
   case mptr of
-    Just ptr -> vPutLineIx v ptr i l
+    Just ptr -> vPutLineIx v ptr (wmPointToIndex p) l
     Nothing  ->
       forM_ [0..l-1] \o -> putChar =<<
         memGetPos (Pos x y + Pos o 0) (memory wm)
+
+wmPointToIndex
+  p@(V2 x y)
+    = my * sw + mx
  where
    Size sw sh = chunkSize
    (cx, mx) = divMod x sw
    (cy, my) = divMod y sh
-   i        = my * sw + mx
 
-
-memAll wm
-  | Just (Size w h) <- wmsize wm = do
-    forM_ [0..h-1] \y ->
-      forM_ [0..w-1] \x ->
-        memSetPos (V2 x y) (tiles wm ! V2 x y) (memory wm)
 
 -------------
 

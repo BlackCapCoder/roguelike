@@ -18,6 +18,9 @@ class Indexable t k a | t k -> a
       = case index t i of
           ~(Just a) -> a
 
+    focus :: t -> k -> t
+    focus = const
+
 (!) = unsafeIndex
 
 
@@ -28,17 +31,8 @@ instance Indexable (SomeIndexable k a) k a
   where
     index       (Ix t) i = index       t i
     unsafeIndex (Ix t) i = unsafeIndex t i
+    focus       (Ix t) i = Ix (focus t i)
 
-
-data Boring = Boring
-
-instance Indexable Boring Pos Char
-  where
-    unsafeIndex _ (V2 x y)
-      | even i = '.'
-      | odd  i = '+'
-      where
-        i = x*y
 
 --------
 

@@ -20,6 +20,16 @@ instance Comonad ListZipper where
   duplicate
     = genericMove leftLZ rightLZ
 
+deriving instance ComonadApply ListZipper
+
+instance Applicative ListZipper
+  where
+    pure a
+      = LZ' (pure a) (pure a)
+
+    LZ' fl  fr <*> LZ' xl xr
+      =  LZ' (fl<*>xl) (fr<*>xr)
+
 
 pattern LZ ls r rs
   = LZ' ls (r :> rs)
@@ -85,8 +95,11 @@ vertical =
 
 instance Indexable (Stream a) Int a
   where
-    unsafeIndex (x :> _) 0 = x
-    unsafeIndex (_ :> x) n = unsafeIndex x (n - 1)
+    unsafeIndex s i
+      = extract $ focus s i
+
+    focus
+      = flip S.drop
 
 instance Indexable (ListZipper a) Int a
   where
@@ -95,8 +108,16 @@ instance Indexable (ListZipper a) Int a
       | i < 0  = unsafeIndex l (abs i - 1)
       | let    = unsafeIndex r (i - 1)
 
+    focus z i
+      | 0 <- i = z
+      | i < 0  = S.iterate (leftLZ ) z S.!! (abs i)
+      | i > 0  = S.iterate (rightLZ) z S.!! i
+
 instance Indexable (Z a) Pos a
   where
     unsafeIndex (Z z) (Pos x y)
       = z ! y ! x
+
+    focus (Z z) (Pos x y)
+      = coerce do flip focus x <$> focus z y
 

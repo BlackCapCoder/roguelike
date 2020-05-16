@@ -5,6 +5,7 @@ import WorldMap
 
 import FOV as F
 import qualified Data.Set as S
+import qualified Data.ByteString.Char8 as B
 
 
 data World = World
@@ -14,6 +15,7 @@ data World = World
   , viewDist :: Int
   , visible  :: S.Set Pos
   , level    :: WorldMap
+  , buffer   :: B.ByteString
   }
 
 newWorld lvl = World
@@ -23,6 +25,7 @@ newWorld lvl = World
   , visible  = mempty
   , viewDist = 10
   , level    = lvl
+  , buffer   = mempty
   }
 
 

@@ -4,7 +4,7 @@ cabal-version: 2.4
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c0dc44ac4f5c0ea5037c38f068ed76a2b5b182dad42dfb078a28238fb6433ba2
+-- hash: 52eeb7bad5b558bc6e81b0c36e40b79fcbb890d63c5dd8fdb1e94d56b3b20d74
 
 name:           rogue
 version:        0.0.0
@@ -13,13 +13,16 @@ build-type:     Simple
 library
   exposed-modules:
       ANSI
+      BTree
       Cellular
       Engine
       FOV
       Geometry
       Indexable
       Memory
+      Menu
       Portal
+      Render
       Sized
       Stack
       World
@@ -34,6 +37,7 @@ library
       MyPrelude
     , base-noprelude >=4.7
     , bytestring
+    , codo-notation
     , comonad
     , containers
     , distributive
@@ -60,6 +64,7 @@ executable rogue-exe
       MyPrelude
     , base-noprelude >=4.7
     , bytestring
+    , codo-notation
     , comonad
     , containers
     , distributive

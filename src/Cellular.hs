@@ -8,6 +8,15 @@ import Control.Comonad
 import System.Random
 
 
+horiz = [left, right]
+vert  = [up, down]
+cardi = horiz <> vert
+diag  = liftM2 (.) horiz vert
+
+neighbours =
+  cardi <> diag
+
+
 ruleGOL :: Z Bool -> Bool
 ruleGOL z =
   case aliveNeighbours z of
@@ -18,21 +27,64 @@ ruleGOL z =
 rule45 :: Z Bool -> Bool
 rule45 z =
   case aliveNeighbours z of
-    -- 0 -> True
+    0 -> True
     4 -> extract z
     n -> n >= 5
 
+rule45' :: Z Bool -> Bool
+rule45' z =
+  case aliveNeighbours z of
+    0 -> True
+    4 -> extract z
+    n -> n >= 5
 
-neighbours :: [Z a -> Z a]
-neighbours =
-  horiz <> vert <> liftM2 (.) horiz vert
-    where
-      horiz = [left, right]
-      vert  = [up, down]
+ruleClean :: Z Bool -> Bool
+ruleClean z =
+  case aliveNeighbours z of
+    0 -> False
+    8 -> False
+    _ -> extract z
+
+ruleSmallClean :: Z Bool -> Bool
+ruleSmallClean z =
+  case aliveNeighbours z of
+    0 -> False
+    -- 1 -> False
+    _ -> extract z
+
+ruleEven :: Z Bool -> Bool
+ruleEven =
+  even . aliveNeighbours
+
+ruleDiag z
+  = aliveDiags z > aliveCardis z
+
+ruleCardi z
+  = aliveDiags z < aliveCardis z
+
+ruleExtreme :: Z Bool -> Bool
+ruleExtreme z =
+  case aliveNeighbours z of
+    0 -> True
+    1 -> True
+    2 -> True
+    8 -> True
+    9 -> True
+    _ -> False
+
+
+alives dirs z
+  = card $ map (\dir -> extract $ dir z) dirs
 
 aliveNeighbours :: Z Bool -> Int
-aliveNeighbours z =
-  card $ map (\dir -> extract $ dir z) neighbours
+aliveNeighbours =
+  alives neighbours
+
+aliveDiags
+  = alives diag
+
+aliveCardis
+  = alives cardi
 
 card :: [Bool] -> Int
 card = length . P.filter (==True)
@@ -61,10 +113,25 @@ rngZ (split->((gens->gl),(gens->gr)))
     line (g:>gs:>gss) =
       LZ' (cells45 g) (cells45 gs) :> line gss
 
-mk45 n = do
+evolve n f
+  = (S.!! n) . S.iterate (extend f)
+
+mk45 = do
   lvl <- rngZ <$> newStdGen
-  pure $
-    map toChar . (S.!! n) $ S.iterate (extend rule45) lvl
+  pure . fmap toChar
+
+       . evolve  2 ruleSmallClean
+       . evolve  4 ruleExtreme
+       . evolve  4 ruleSmallClean
+       . evolve  2 rule45'
+       . evolve 10 ruleClean
+       . evolve  1 ruleCardi
+       . evolve  6 rule45'
+       . evolve  1 ruleGOL
+       . evolve  2 rule45'
+       . fmap not
+       . evolve 10 rule45
+       $ lvl
 
 toChar = \ case
   True  -> '#'
